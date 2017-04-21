@@ -1,0 +1,6 @@
+services:
+    terminal42_assets.listener.package:
+        class: Terminal42\AssetsBundle\EventListener\PackageListener
+        arguments:
+            - "@terminal42_assets.handler"
+            - "@terminal42_assets.registry"

@@ -5,31 +5,17 @@
 Bundle configuration for CSS and JavaScript files.
 
 ```yml
-    terminal42_assets:
-        root: "%kernel.project_dir%/web/layout"
-        layouts:
-            foobar:
-                name: "Foobar"
-                header:
-                    - foobar.css
-                    - jquery.js
-                footer:
-                    - foobar.js
-```
-
-Other ideas:
-
-```yml
-    terminal42_assets:
-        root: "%kernel.project_dir%/web/layout"
-        layouts:
-            foobar:
-                name: "Foobar"
-                css:
-                    - foobar.css
-                js:
-                    - jquery.js
-                    - { name: foobar.js, position: footer }
+terminal42_assets:
+    root_dir: %kernel.root_dir%/../web/layout
+    packages:
+        foobar:
+            name: "Foobar"
+            css:
+                - foobar.css
+                - {name: foobaz.css}
+            js:
+                - foobar.js
+                - {name: foobaz.js, section: header} # section can be "header" or "footer"
 ```
 
 Or it could simply be *files* instead of *css* and *js* and determine by the file extension.

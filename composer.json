@@ -1,0 +1,32 @@
+{
+    "name": "terminal42/contao-assets",
+    "description": "Assets bundle for Contao Open Source CMS",
+    "keywords": ["contao", "asset", "assets"],
+    "type": "contao-bundle",
+    "license":"LGPL-3.0+",
+    "authors":[
+        {
+            "name":"terminal42 gmbh",
+            "homepage":"http://terminal42.ch"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "contao/core-bundle": "^4.3",
+        "webmozart/path-util": "^2.3"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.0"
+    },
+    "conflict": {
+        "contao/manager-plugin": "<2.0 || >=3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Terminal42\\AssetsBundle\\": "src"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Terminal42\\AssetsBundle\\ContaoManager\\Plugin"
+    }
+}
