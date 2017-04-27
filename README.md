@@ -73,15 +73,15 @@ For the better cache control over the asset static files it is recommended to se
 as possible. It is safe as whenever the file content changes it will have a new version URL parameter so the client
 will automatically download the file again.
 
-**Note that the below directives affect all CSS and JS files on the server!**
-
 Example `.htaccess` directives:
 
 ```htaccess
 <IfModule mod_expires.c>
-  ExpiresActive on
-  
-  ExpiresByType text/css               "access 1 year"
-  ExpiresByType application/javascript "access 1 year"
+  <DirectoryMatch "^/layout/(.+/)?">
+    ExpiresActive on
+
+    ExpiresByType text/css               "access 1 year"
+    ExpiresByType application/javascript "access 1 year"
+  </DirectoryMatch>
 </IfModule>
 ```
