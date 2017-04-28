@@ -35,7 +35,17 @@ class Configuration implements ConfigurationInterface
                     ->requiresAtLeastOneElement()
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('name')->end()
+                            ->scalarNode('name')
+                                ->validate()
+                                    ->always(function ($value) {
+                                        if (strlen($value) > 128) {
+                                            throw new \InvalidArgumentException('A collection name must be no longer than 128 chars.');
+                                        }
+
+                                        return $value;
+                                    })
+                                ->end()
+                            ->end()
                             ->arrayNode('css')
                                 ->prototype('array')
                                     ->beforeNormalization()
