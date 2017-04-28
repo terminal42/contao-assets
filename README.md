@@ -61,7 +61,7 @@ terminal42_assets:
                 - { name: layout/foobaz.css }
             js:
                 - foobar.js
-                - { name: layout/foobaz.js, section: header } # section can be "header" or "footer"
+                - { name: layout/foobaz.js, section: header, async: true } # section can be "header" or "footer"
 ```
 
 Then for each page layout you can select an asset package that will be automatically added to the page.

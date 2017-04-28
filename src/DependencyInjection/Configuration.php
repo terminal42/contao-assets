@@ -66,6 +66,7 @@ class Configuration implements ConfigurationInterface
                                     ->children()
                                         ->scalarNode('name')->isRequired()->end()
                                         ->scalarNode('section')->defaultValue('footer')->end()
+                                        ->booleanNode('async')->defaultFalse()->end()
                                     ->end()
                                 ->end()
                             ->end()

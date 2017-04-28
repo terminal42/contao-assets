@@ -71,16 +71,16 @@ class AssetsListener
         }
 
         // Add CSS files
-        foreach ($this->collections[$layout->assets_collection]['css'] as $css) {
-            $GLOBALS['TL_CSS'][] = $this->computeFilename($css);
+        foreach ($this->collections[$layout->assets_collection]['css'] as $file) {
+            $GLOBALS['TL_CSS'][] = $this->computeFilename($file);
         }
 
         // Add JS files
-        foreach ($this->collections[$layout->assets_collection]['js'] as $js) {
-            if ($js['section'] === 'footer') {
-                $GLOBALS['TL_BODY'][] = Template::generateScriptTag($this->computeFilename($js));
+        foreach ($this->collections[$layout->assets_collection]['js'] as $file) {
+            if ($file['section'] === 'footer') {
+                $GLOBALS['TL_BODY'][] = Template::generateScriptTag($this->computeFilename($file), $file['async']);
             } else {
-                $GLOBALS['TL_JAVASCRIPT'][] = $this->computeFilename($js);
+                $GLOBALS['TL_JAVASCRIPT'][] = $this->computeFilename($file).($file['async'] ? '|async' : '');
             }
         }
     }
