@@ -97,9 +97,9 @@ supported by versioning system (e.g. for the Contao backend or included by custo
 
 ### nginx
 
-Add the following location block to your Nginx server configuration:
+Add the following to your Nginx server configuration:
 
-```
+```nginx
 map $sent_http_content_type $expires {
   default                       off;
   text/css                      1y;
