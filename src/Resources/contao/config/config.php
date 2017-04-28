@@ -12,4 +12,4 @@
 /**
  * Hooks
  */
-$GLOBALS['TL_HOOKS']['generatePage'][] = ['terminal42_assets.listener.package', 'onGeneratePage'];
+$GLOBALS['TL_HOOKS']['generatePage'][] = ['terminal42_assets.listener.assets', 'onGeneratePage'];

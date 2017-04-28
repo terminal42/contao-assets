@@ -1,8 +1,0 @@
-services:
-    terminal42_assets.registry:
-        class: Terminal42\AssetsBundle\PackageRegistry
-
-    terminal42_assets.handler:
-        class: Terminal42\AssetsBundle\PackageHandler
-        arguments:
-            - "%kernel.root_dir%/../"

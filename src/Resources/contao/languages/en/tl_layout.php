@@ -12,7 +12,7 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_layout']['assets_package'] = ['Assets package', 'Here you can choose the assets package that will be automatically added to the page layout.'];
+$GLOBALS['TL_LANG']['tl_layout']['assets_collection'] = ['Assets Collection', 'Here you can choose a collection of assets that will be automatically added to the page layout.'];
 
 /**
  * Legends

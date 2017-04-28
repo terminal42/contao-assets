@@ -28,31 +28,34 @@ class Terminal42AssetsExtension extends ConfigurableExtension
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('listener.yml');
-        $loader->load('services.yml');
 
-        $definition = $container->getDefinition('terminal42_assets.registry');
-        $definition->addArgument($this->parsePackages($mergedConfig['packages'], $mergedConfig['root_dir']));
+        $loader->load('listener.yml');
+
+        $container->setParameter('terminal42_assets.root_dir', $mergedConfig['root_dir']);
+        $container->setParameter(
+            'terminal42_assets.collections',
+            $this->parseCollections($mergedConfig['collections'], $mergedConfig['root_dir'])
+        );
     }
 
     /**
-     * Parse the packages by computing the file version.
+     * Parse the collections by computing the file version.
      *
-     * @param array  $packages
+     * @param array  $collections
      * @param string $rootDir
      *
      * @return array
      */
-    private function parsePackages(array $packages, string $rootDir): array
+    private function parseCollections(array $collections, string $rootDir): array
     {
         $fs = new Filesystem();
 
-        foreach ($packages as &$package) {
-            $package['css'] = $this->computeFileVersions($package['css'], $rootDir, $fs);
-            $package['js'] = $this->computeFileVersions($package['js'], $rootDir, $fs);
+        foreach ($collections as &$collection) {
+            $collection['css'] = $this->computeFileVersions($collection['css'], $rootDir, $fs);
+            $collection['js'] = $this->computeFileVersions($collection['js'], $rootDir, $fs);
         }
 
-        return $packages;
+        return $collections;
     }
 
     /**

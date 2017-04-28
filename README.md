@@ -27,7 +27,7 @@ which will boost the page load time quite significantly.
 
 ## How it works?
 
-Every asset file specified in the configuration is parsed by the compiler pass which checks its content
+Every asset file specified in the configuration is parsed by the bundle extension which checks its content
 and compiles the unique version hash. It is guaranteed that if the file content has not changed the hash
 remains the same as previously.
 
@@ -52,16 +52,16 @@ You can specify the multiple asset packages in the `app/config/config.yml` file 
 
 ```yml
 terminal42_assets:
-    root_dir: %kernel.root_dir%/../web/layout
-    packages:
+    root_dir: %kernel.root_dir%/../web
+    collections:
         foobar:
             name: "Foobar"
             css:
                 - foobar.css
-                - { name: foobaz.css }
+                - { name: layout/foobaz.css }
             js:
                 - foobar.js
-                - { name: foobaz.js, section: header } # section can be "header" or "footer"
+                - { name: layout/foobaz.js, section: header } # section can be "header" or "footer"
 ```
 
 Then for each page layout you can select an asset package that will be automatically added to the page.

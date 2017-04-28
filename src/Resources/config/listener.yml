@@ -1,6 +1,6 @@
 services:
-    terminal42_assets.listener.package:
-        class: Terminal42\AssetsBundle\EventListener\PackageListener
+    terminal42_assets.listener.assets:
+        class: Terminal42\AssetsBundle\EventListener\AssetsListener
         arguments:
-            - "@terminal42_assets.handler"
-            - "@terminal42_assets.registry"
+            - "%terminal42_assets.collections%"
+            - "%kernel.root_dir%/../web"

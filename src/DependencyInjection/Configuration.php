@@ -28,15 +28,15 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('root_dir')->isRequired()->end()
-                ->arrayNode('packages')
+                // TODO replace with %kernel.project_dir% in Symfony 3.3
+                ->scalarNode('root_dir')->defaultValue('%kernel.root_dir%/../web')->end()
+                ->arrayNode('collections')
                     ->isRequired()
                     ->requiresAtLeastOneElement()
                     ->prototype('array')
                         ->children()
                             ->scalarNode('name')->end()
                             ->arrayNode('css')
-                                ->requiresAtLeastOneElement()
                                 ->prototype('array')
                                     ->beforeNormalization()
                                         ->ifString()
@@ -48,7 +48,6 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                             ->arrayNode('js')
-                                ->requiresAtLeastOneElement()
                                 ->prototype('array')
                                     ->beforeNormalization()
                                         ->ifString()
