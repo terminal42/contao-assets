@@ -1,6 +1,15 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
+
+/*
+ * Assets Bundle for Contao Open Source CMS
+ *
+ * @copyright  Copyright (c) 2017-2017, terminal42 gmbh
+ * @author     terminal42 gmbh <info@terminal42.ch>
+ * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
+ * @link       http://github.com/terminal42/contao-assets
+ */
 
 namespace Terminal42\AssetsBundle;
 
@@ -24,7 +33,7 @@ class PackageHandler
     }
 
     /**
-     * Add package to the page
+     * Add package to the page.
      *
      * @param array $package
      */
@@ -46,7 +55,7 @@ class PackageHandler
     }
 
     /**
-     * Compute the filename
+     * Compute the filename.
      *
      * @param array $file
      *

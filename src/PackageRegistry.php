@@ -1,13 +1,23 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
+
+/*
+ * Assets Bundle for Contao Open Source CMS
+ *
+ * @copyright  Copyright (c) 2017-2017, terminal42 gmbh
+ * @author     terminal42 gmbh <info@terminal42.ch>
+ * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
+ * @link       http://github.com/terminal42/contao-assets
+ */
 
 namespace Terminal42\AssetsBundle;
 
 class PackageRegistry
 {
     /**
-     * Packages
+     * Packages.
+     *
      * @var array
      */
     private $packages = [];
@@ -23,7 +33,7 @@ class PackageRegistry
     }
 
     /**
-     * Return true if the package is registered
+     * Return true if the package is registered.
      *
      * @param string $package
      *
@@ -35,7 +45,7 @@ class PackageRegistry
     }
 
     /**
-     * Get the package
+     * Get the package.
      *
      * @param string $package
      *
@@ -51,7 +61,7 @@ class PackageRegistry
     }
 
     /**
-     * Get all packages
+     * Get all packages.
      *
      * @return array
      */

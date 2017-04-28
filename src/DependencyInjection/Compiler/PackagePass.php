@@ -1,6 +1,15 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
+
+/*
+ * Assets Bundle for Contao Open Source CMS
+ *
+ * @copyright  Copyright (c) 2017-2017, terminal42 gmbh
+ * @author     terminal42 gmbh <info@terminal42.ch>
+ * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
+ * @link       http://github.com/terminal42/contao-assets
+ */
 
 namespace Terminal42\AssetsBundle\DependencyInjection\Compiler;
 
@@ -12,7 +21,8 @@ use Webmozart\PathUtil\Path;
 class PackagePass implements CompilerPassInterface
 {
     /**
-     * Parameter prefix
+     * Parameter prefix.
+     *
      * @var string
      */
     private $parameterPrefix;
@@ -28,11 +38,11 @@ class PackagePass implements CompilerPassInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        $rootDirParam  = $this->parameterPrefix.'.root_dir';
+        $rootDirParam = $this->parameterPrefix.'.root_dir';
         $packagesParam = $this->parameterPrefix.'.packages';
 
         if (!$container->hasParameter($rootDirParam) || !$container->hasParameter($packagesParam)) {
@@ -46,7 +56,7 @@ class PackagePass implements CompilerPassInterface
     }
 
     /**
-     * Parse the packages by computing the file version
+     * Parse the packages by computing the file version.
      *
      * @param array  $packages
      * @param string $rootDir
@@ -59,22 +69,22 @@ class PackagePass implements CompilerPassInterface
 
         foreach ($packages as &$package) {
             $package['css'] = $this->computeFileVersions($package['css'], $rootDir, $fs);
-            $package['js']  = $this->computeFileVersions($package['js'], $rootDir, $fs);
+            $package['js'] = $this->computeFileVersions($package['js'], $rootDir, $fs);
         }
 
         return $packages;
     }
 
     /**
-     * Compute the file versions
+     * Compute the file versions.
      *
      * @param array      $files
      * @param string     $rootDir
      * @param Filesystem $fs
      *
-     * @return array
-     *
      * @throws \RuntimeException
+     *
+     * @return array
      */
     private function computeFileVersions(array $files, string $rootDir, Filesystem $fs): array
     {

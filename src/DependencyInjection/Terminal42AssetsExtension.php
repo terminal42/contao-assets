@@ -1,6 +1,15 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
+
+/*
+ * Assets Bundle for Contao Open Source CMS
+ *
+ * @copyright  Copyright (c) 2017-2017, terminal42 gmbh
+ * @author     terminal42 gmbh <info@terminal42.ch>
+ * @license    http://opensource.org/licenses/lgpl-3.0.html LGPL
+ * @link       http://github.com/terminal42/contao-assets
+ */
 
 namespace Terminal42\AssetsBundle\DependencyInjection;
 
@@ -12,11 +21,11 @@ use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 class Terminal42AssetsExtension extends ConfigurableExtension
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('listener.yml');
         $loader->load('services.yml');
 
