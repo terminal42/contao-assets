@@ -100,7 +100,7 @@ supported by versioning system (e.g. for the Contao backend or included by custo
 Add the following location block to your Nginx server configuration:
 
 ```
-location /layout {
+location ~* /layout/\.(?:css|js)$ {
   expires 1y;
   access_log off;
 }
