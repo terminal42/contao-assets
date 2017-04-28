@@ -80,7 +80,6 @@ Here is the example `.htaccess` file you can put in your assets folder:
 ```htaccess
 <IfModule mod_expires.c>
   ExpiresActive on
-
   ExpiresByType text/css               "access 1 year"
   ExpiresByType application/javascript "access 1 year"
 </IfModule>
@@ -98,4 +97,11 @@ supported by versioning system (e.g. for the Contao backend or included by custo
 
 ### nginx
 
-Please contribute :-)
+Add the following location block to your Nginx server configuration:
+
+```
+location /layout {
+  expires 1y;
+  access_log off;
+}
+```
