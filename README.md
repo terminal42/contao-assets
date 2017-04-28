@@ -105,3 +105,6 @@ location /layout {
   access_log off;
 }
 ```
+
+**Note:** The location block above assumes that your assets are stored in the `web/layout` folder. Please adjust the
+path to fit your needs.
