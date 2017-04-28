@@ -1,8 +1,6 @@
 services:
     terminal42_assets.registry:
         class: Terminal42\AssetsBundle\PackageRegistry
-        arguments:
-            - "%terminal42_assets.packages%"
 
     terminal42_assets.handler:
         class: Terminal42\AssetsBundle\PackageHandler

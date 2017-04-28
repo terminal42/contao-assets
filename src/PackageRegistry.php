@@ -27,7 +27,7 @@ class PackageRegistry
      *
      * @param array $packages
      */
-    public function __construct(array $packages)
+    public function __construct(array $packages = [])
     {
         $this->packages = $packages;
     }
