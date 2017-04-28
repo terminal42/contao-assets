@@ -73,15 +73,23 @@ For the better cache control over the asset static files it is recommended to se
 as possible. It is safe as whenever the file content changes it will have a new version URL parameter so the client
 will automatically download the file again.
 
-Example `.htaccess` directives:
+Here is the example `.htaccess` file you can put in your assets folder:
 
 ```htaccess
 <IfModule mod_expires.c>
-  <DirectoryMatch "^/layout/(.+/)?">
-    ExpiresActive on
+  ExpiresActive on
 
-    ExpiresByType text/css               "access 1 year"
-    ExpiresByType application/javascript "access 1 year"
-  </DirectoryMatch>
+  ExpiresByType text/css               "access 1 year"
+  ExpiresByType application/javascript "access 1 year"
 </IfModule>
 ```
+
+That will set the `max-age` of the cache control header to 1 year for all CSS and JS files:
+
+```
+Cache-Control:max-age=31536000
+```
+
+**Warning:** it is recommended to put the above file in a subfolder that contains only the assets you want to cache.
+You should probably not put it in the root directory as it will affect all the assets, including those that are not
+supported by versioning system (e.g. for the Contao backend or included by custom extensions).
