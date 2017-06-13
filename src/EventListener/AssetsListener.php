@@ -70,17 +70,22 @@ class AssetsListener
             return;
         }
 
+        $GLOBALS['TL_CSS'] = is_array($GLOBALS['TL_CSS']) ? $GLOBALS['TL_CSS'] : [];
+
         // Add CSS files
-        foreach ($this->collections[$layout->assets_collection]['css'] as $file) {
-            $GLOBALS['TL_CSS'][] = $this->computeFilename($file);
+        foreach (array_reverse($this->collections[$layout->assets_collection]['css']) as $file) {
+            array_unshift($GLOBALS['TL_CSS'], $this->computeFilename($file));
         }
 
+        $GLOBALS['TL_BODY'] = is_array($GLOBALS['TL_BODY']) ? $GLOBALS['TL_BODY'] : [];
+        $GLOBALS['TL_JAVASCRIPT'] = is_array($GLOBALS['TL_JAVASCRIPT']) ? $GLOBALS['TL_JAVASCRIPT'] : [];
+
         // Add JS files
-        foreach ($this->collections[$layout->assets_collection]['js'] as $file) {
+        foreach (array_reverse($this->collections[$layout->assets_collection]['js']) as $file) {
             if ($file['section'] === 'footer') {
-                $GLOBALS['TL_BODY'][] = Template::generateScriptTag($this->computeFilename($file), $file['async']);
+                array_unshift($GLOBALS['TL_BODY'], Template::generateScriptTag($this->computeFilename($file), $file['async']));
             } else {
-                $GLOBALS['TL_JAVASCRIPT'][] = $this->computeFilename($file).($file['async'] ? '|async' : '');
+                array_unshift($GLOBALS['TL_JAVASCRIPT'], $this->computeFilename($file).($file['async'] ? '|async' : ''));
             }
         }
     }
