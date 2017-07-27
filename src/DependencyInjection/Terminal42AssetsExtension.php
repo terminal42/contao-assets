@@ -23,6 +23,16 @@ use Webmozart\PathUtil\Path;
 class Terminal42AssetsExtension extends ConfigurableExtension
 {
     /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    private $rootDir;
+    private $webDir;
+
+    private static $configKeys = ['version', 'section'];
+
+    /**
      * {@inheritdoc}
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
@@ -31,11 +41,16 @@ class Terminal42AssetsExtension extends ConfigurableExtension
 
         $loader->load('listener.yml');
 
-        $container->setParameter('terminal42_assets.root_dir', $mergedConfig['root_dir']);
-        $container->setParameter(
-            'terminal42_assets.collections',
-            $this->parseCollections($mergedConfig['collections'], $mergedConfig['root_dir'])
+        $collections = $this->parseCollections(
+            $mergedConfig['collections'],
+            $mergedConfig['root_dir'],
+            $container->getParameter('kernel.root_dir').'/../web'
         );
+
+        $container
+            ->getDefinition('terminal42_assets.listener.assets')
+            ->setArgument(0, $collections)
+        ;
     }
 
     /**
@@ -43,45 +58,60 @@ class Terminal42AssetsExtension extends ConfigurableExtension
      *
      * @param array  $collections
      * @param string $rootDir
+     * @param string $webDir
      *
      * @return array
      */
-    private function parseCollections(array $collections, string $rootDir): array
+    private function parseCollections(array $collections, string $rootDir, string $webDir): array
     {
-        $fs = new Filesystem();
+        $this->filesystem = new Filesystem();
+        $this->rootDir = $rootDir;
+        $this->webDir = $webDir;
 
         foreach ($collections as &$collection) {
-            $collection['css'] = $this->computeFileVersions($collection['css'], $rootDir, $fs);
-            $collection['js'] = $this->computeFileVersions($collection['js'], $rootDir, $fs);
+            $collection['meta'] = $this->parseTags($collection['meta']);
+            $collection['link'] = $this->parseTags($collection['link'], 'href');
+            $collection['script'] = $this->parseTags($collection['script'], 'src');
         }
 
         return $collections;
     }
 
-    /**
-     * Compute the file versions.
-     *
-     * @param array      $files
-     * @param string     $rootDir
-     * @param Filesystem $fs
-     *
-     * @throws \RuntimeException
-     *
-     * @return array
-     */
-    private function computeFileVersions(array $files, string $rootDir, Filesystem $fs): array
+    private function parseTags(array $configs, string $pathKey = null)
     {
-        foreach ($files as &$file) {
-            $path = Path::canonicalize($rootDir.'/'.$file['name']);
+        $keys = array_flip(static::$configKeys);
 
-            if (!$fs->exists($path)) {
-                throw new \RuntimeException(sprintf('The file "%s" does not exist', $path));
+        foreach ($configs as &$config) {
+            $attributes = array_diff_key($config, $keys);
+            $config = array_intersect_key($config, $keys);
+
+            if (null !== $pathKey && !$this->isAbsoluteUrl($attributes[$pathKey])) {
+                $path = Path::canonicalize($this->rootDir.'/'. $attributes[$pathKey]);
+                $this->addFileInfo($config, $attributes, $path);
+                $attributes[$pathKey] = Path::makeRelative($path, $this->webDir);
             }
 
-            $file['name'] = $path;
-            $file['version'] = md5_file($path);
+            $config['attributes'] = $attributes;
         }
 
-        return $files;
+        return $configs;
+    }
+
+    private function addFileInfo(array &$config, array &$attributes, string $path)
+    {
+        if (!isset($attributes['integrity'])) {
+            $attributes['integrity'] = 'sha256-'.base64_encode(hash_file('sha256', $path));
+        }
+
+        if (!isset($config['version'])) {
+            list(,$hash) = explode('-', $attributes['integrity']);
+
+            $config['version'] = substr(md5(base64_decode($hash)), 0, 8);
+        }
+    }
+
+    private function isAbsoluteUrl(string $path)
+    {
+        return preg_match('{^(https?:)?//}is', $path);
     }
 }

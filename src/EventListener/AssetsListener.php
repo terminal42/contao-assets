@@ -15,7 +15,6 @@ namespace Terminal42\AssetsBundle\EventListener;
 
 use Contao\LayoutModel;
 use Contao\PageModel;
-use Contao\Template;
 use Webmozart\PathUtil\Path;
 
 class AssetsListener
@@ -26,20 +25,13 @@ class AssetsListener
     private $collections;
 
     /**
-     * @var string
-     */
-    private $webDir;
-
-    /**
-     * AssetsListener constructor.
+     * Constructor.
      *
      * @param array  $collections
-     * @param string $webDir
      */
-    public function __construct(array $collections, string $webDir)
+    public function __construct(array $collections)
     {
         $this->collections = $collections;
-        $this->webDir = $webDir;
     }
 
     /**
@@ -49,13 +41,12 @@ class AssetsListener
      */
     public function onDcaOptionsCallback(): array
     {
-        $options = [];
-
-        foreach ($this->collections as $key => $data) {
-            $options[$key] = $data['name'];
-        }
-
-        return $options;
+        return array_map(
+            function (array $item) {
+                return $item['name'];
+            },
+            $this->collections
+        );
     }
 
     /**
@@ -70,35 +61,63 @@ class AssetsListener
             return;
         }
 
-        $GLOBALS['TL_CSS'] = is_array($GLOBALS['TL_CSS']) ? $GLOBALS['TL_CSS'] : [];
+        $GLOBALS['TL_HEAD'] = is_array($GLOBALS['TL_HEAD']) ? $GLOBALS['TL_HEAD'] : [];
+        $GLOBALS['TL_BODY'] = is_array($GLOBALS['TL_BODY']) ? $GLOBALS['TL_BODY'] : [];
 
-        // Add CSS files
-        foreach (array_reverse($this->collections[$layout->assets_collection]['css']) as $file) {
-            array_unshift($GLOBALS['TL_CSS'], $this->computeFilename($file));
+        // Add <meta> tags
+        foreach ($this->collections[$layout->assets_collection]['meta'] as $config) {
+            $GLOBALS['TL_HEAD'][] = $this->generateTag('meta', $config['attributes']);
         }
 
-        $GLOBALS['TL_BODY'] = is_array($GLOBALS['TL_BODY']) ? $GLOBALS['TL_BODY'] : [];
-        $GLOBALS['TL_JAVASCRIPT'] = is_array($GLOBALS['TL_JAVASCRIPT']) ? $GLOBALS['TL_JAVASCRIPT'] : [];
+        // Add <link> tags
+        foreach ($this->collections[$layout->assets_collection]['link'] as $config) {
+            $this->addVersion($config, 'href');
+            $GLOBALS['TL_HEAD'][] = $this->generateTag('link', $config['attributes']);
+        }
 
-        // Add JS files
-        foreach (array_reverse($this->collections[$layout->assets_collection]['js']) as $file) {
-            if ($file['section'] === 'footer') {
-                array_unshift($GLOBALS['TL_BODY'], Template::generateScriptTag($this->computeFilename($file), $file['async']));
+        // Add <script> tags
+        foreach ($this->collections[$layout->assets_collection]['script'] as $config) {
+            $this->addVersion($config, 'src');
+            $tag = $this->generateTag('script', $config['attributes'], true);
+
+            if ($config['section'] === 'header') {
+                $GLOBALS['TL_HEAD'][] = $tag;
             } else {
-                array_unshift($GLOBALS['TL_JAVASCRIPT'], $this->computeFilename($file).($file['async'] ? '|async' : ''));
+                $GLOBALS['TL_BODY'][] = $tag;
             }
         }
     }
 
-    /**
-     * Compute the filename.
-     *
-     * @param array $file
-     *
-     * @return string
-     */
-    private function computeFilename(array $file): string
+    private function generateTag(string $name, array $attributes, bool $close = false)
     {
-        return sprintf('%s?v=%s', Path::makeRelative($file['name'], $this->webDir), substr($file['version'], 0, 8));
+        $attr = [];
+
+        foreach ($attributes as $k => $v) {
+            if (true === $v) {
+                $attr[] = $k;
+            } elseif (!is_bool($v)) {
+                $attr[] = sprintf('%s="%s"', $k, htmlspecialchars($v, ENT_COMPAT, 'UTF-8', false));
+            }
+        }
+
+        if (empty($attr)) {
+            return '';
+        }
+
+        return sprintf(
+            '<%s %s>%s',
+            $name,
+            implode(' ', $attr),
+            $close ? '</'.$name.'>' : ''
+        );
+    }
+
+    private function addVersion(array &$config, string $pathKey)
+    {
+        if (!isset($config['version'])) {
+            return;
+        }
+
+        $config['attributes'][$pathKey] = sprintf('%s?v=%s', $config['attributes'][$pathKey], $config['version']);
     }
 }
